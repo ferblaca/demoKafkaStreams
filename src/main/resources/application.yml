@@ -1,0 +1,60 @@
+spring:
+  cloud:
+    stream:
+      binders:
+        kafka1:
+          type: kafka
+          environment:
+            spring:
+              cloud:
+                stream:
+                  kafka:
+                    streams:
+                      binder:
+                        brokers: localhost:9092
+        kafka-stream:
+          type: kstream
+          environment:
+            spring:
+              cloud:
+                stream:
+                  kafka:
+                    streams:
+                      default:
+                        producer:
+                          useNativeEncoding: false
+                        consumer:
+                          useNativeDecoding: false
+                      binder:
+                        brokers: localhost:9092
+                        producerProperties:
+                          useNativeEncoding: false
+                        consumerProperties:
+                          useNativeDecoding: false
+      function:
+        definition: nameSupplier;kafkaStreamCount
+      kafka:
+        streams:
+          binder:
+            functions:
+              kafkaStreamCount:
+                applicationId: app-id-1
+                configuration:
+                  client.id: client-id-kafkaStreamCount
+      bindings:
+        nameSupplier-out-0:
+          group: kstream-consumer-group
+          destination: words-source
+          contentType: text/plain
+          binder: kafka1
+        kafkaStreamCount-in-0:
+          group: kstream-consumer-group
+          destination: words-source
+          contentType: text/plain
+          binder: kafka-stream
+        kafkaStreamCount-out-0:
+          group: kstream-consumer-group
+          destination: words-sink
+          binder: kafka-stream
+          producer:
+            useNativeEncoding: false
