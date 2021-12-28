@@ -56,5 +56,5 @@ spring:
           group: kstream-consumer-group
           destination: words-sink
           binder: kafka-stream
-          producer:
-            useNativeEncoding: false
+#          producer:
+#            useNativeEncoding: false
